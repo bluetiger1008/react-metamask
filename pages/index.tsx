@@ -2,7 +2,7 @@ import React from 'react'
 import { Web3ReactProvider, useWeb3React, UnsupportedChainIdError } from '@web3-react/core'
 import {
   NoEthereumProviderError,
-  UserRejectedRequestError as UserRejectedRequestErrorInjected
+  UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from '@web3-react/injected-connector'
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
 import { UserRejectedRequestError as UserRejectedRequestErrorFrame } from '@web3-react/frame-connector'
@@ -10,53 +10,15 @@ import { Web3Provider } from '@ethersproject/providers'
 import { formatEther } from '@ethersproject/units'
 
 import { useEagerConnect, useInactiveListener } from '../hooks'
-import {
-  injected,
-  network,
-  walletconnect,
-  walletlink,
-  ledger,
-  trezor,
-  lattice,
-  frame,
-  authereum,
-  fortmatic,
-  magic,
-  portis,
-  torus
-} from '../connectors'
+import { injected } from '../connectors'
 import { Spinner } from '../components/Spinner'
 
 enum ConnectorNames {
   Injected = 'Injected',
-  Network = 'Network',
-  WalletConnect = 'WalletConnect',
-  WalletLink = 'WalletLink',
-  Ledger = 'Ledger',
-  Trezor = 'Trezor',
-  Lattice = 'Lattice',
-  Frame = 'Frame',
-  Authereum = 'Authereum',
-  Fortmatic = 'Fortmatic',
-  Magic = 'Magic',
-  Portis = 'Portis',
-  Torus = 'Torus'
 }
 
 const connectorsByName: { [connectorName in ConnectorNames]: any } = {
   [ConnectorNames.Injected]: injected,
-  [ConnectorNames.Network]: network,
-  [ConnectorNames.WalletConnect]: walletconnect,
-  [ConnectorNames.WalletLink]: walletlink,
-  [ConnectorNames.Ledger]: ledger,
-  [ConnectorNames.Trezor]: trezor,
-  [ConnectorNames.Lattice]: lattice,
-  [ConnectorNames.Frame]: frame,
-  [ConnectorNames.Authereum]: authereum,
-  [ConnectorNames.Fortmatic]: fortmatic,
-  [ConnectorNames.Magic]: magic,
-  [ConnectorNames.Portis]: portis,
-  [ConnectorNames.Torus]: torus
 }
 
 function getErrorMessage(error: Error) {
@@ -82,7 +44,7 @@ function getLibrary(provider: any): Web3Provider {
   return library
 }
 
-export default function() {
+export default function () {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <App />
@@ -221,7 +183,7 @@ function Header() {
           gridTemplateColumns: '1fr min-content 1fr',
           maxWidth: '20rem',
           lineHeight: '2rem',
-          margin: 'auto'
+          margin: 'auto',
         }}
       >
         <ChainId />
@@ -261,10 +223,10 @@ function App() {
           gridGap: '1rem',
           gridTemplateColumns: '1fr 1fr',
           maxWidth: '20rem',
-          margin: 'auto'
+          margin: 'auto',
         }}
       >
-        {Object.keys(connectorsByName).map(name => {
+        {Object.keys(connectorsByName).map((name) => {
           const currentConnector = connectorsByName[name]
           const activating = currentConnector === activatingConnector
           const connected = currentConnector === connector
@@ -277,7 +239,7 @@ function App() {
                 borderRadius: '1rem',
                 borderColor: activating ? 'orange' : connected ? 'green' : 'unset',
                 cursor: disabled ? 'unset' : 'pointer',
-                position: 'relative'
+                position: 'relative',
               }}
               disabled={disabled}
               key={name}
@@ -295,7 +257,7 @@ function App() {
                   display: 'flex',
                   alignItems: 'center',
                   color: 'black',
-                  margin: '0 0 0 1rem'
+                  margin: '0 0 0 1rem',
                 }}
               >
                 {activating && <Spinner color={'black'} style={{ height: '25%', marginLeft: '-1rem' }} />}
@@ -318,7 +280,7 @@ function App() {
               marginTop: '2rem',
               borderRadius: '1rem',
               borderColor: 'red',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
             onClick={() => {
               deactivate()
@@ -339,7 +301,7 @@ function App() {
           gridGap: '1rem',
           gridTemplateColumns: 'fit-content',
           maxWidth: '20rem',
-          margin: 'auto'
+          margin: 'auto',
         }}
       >
         {!!(library && account) && (
@@ -347,7 +309,7 @@ function App() {
             style={{
               height: '3rem',
               borderRadius: '1rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
             onClick={() => {
               library
@@ -362,120 +324,6 @@ function App() {
             }}
           >
             Sign Message
-          </button>
-        )}
-        {!!(connector === connectorsByName[ConnectorNames.Network] && chainId) && (
-          <button
-            style={{
-              height: '3rem',
-              borderRadius: '1rem',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              ;(connector as any).changeChainId(chainId === 1 ? 4 : 1)
-            }}
-          >
-            Switch Networks
-          </button>
-        )}
-        {connector === connectorsByName[ConnectorNames.WalletConnect] && (
-          <button
-            style={{
-              height: '3rem',
-              borderRadius: '1rem',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              ;(connector as any).close()
-            }}
-          >
-            Kill WalletConnect Session
-          </button>
-        )}
-        {connector === connectorsByName[ConnectorNames.WalletLink] && (
-          <button
-            style={{
-              height: '3rem',
-              borderRadius: '1rem',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              ;(connector as any).close()
-            }}
-          >
-            Kill WalletLink Session
-          </button>
-        )}
-        {connector === connectorsByName[ConnectorNames.Fortmatic] && (
-          <button
-            style={{
-              height: '3rem',
-              borderRadius: '1rem',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              ;(connector as any).close()
-            }}
-          >
-            Kill Fortmatic Session
-          </button>
-        )}
-        {connector === connectorsByName[ConnectorNames.Magic] && (
-          <button
-            style={{
-              height: '3rem',
-              borderRadius: '1rem',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              ;(connector as any).close()
-            }}
-          >
-            Kill Magic Session
-          </button>
-        )}
-        {connector === connectorsByName[ConnectorNames.Portis] && (
-          <>
-            {chainId !== undefined && (
-              <button
-                style={{
-                  height: '3rem',
-                  borderRadius: '1rem',
-                  cursor: 'pointer'
-                }}
-                onClick={() => {
-                  ;(connector as any).changeNetwork(chainId === 1 ? 100 : 1)
-                }}
-              >
-                Switch Networks
-              </button>
-            )}
-            <button
-              style={{
-                height: '3rem',
-                borderRadius: '1rem',
-                cursor: 'pointer'
-              }}
-              onClick={() => {
-                ;(connector as any).close()
-              }}
-            >
-              Kill Portis Session
-            </button>
-          </>
-        )}
-        {connector === connectorsByName[ConnectorNames.Torus] && (
-          <button
-            style={{
-              height: '3rem',
-              borderRadius: '1rem',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              ;(connector as any).close()
-            }}
-          >
-            Kill Torus Session
           </button>
         )}
       </div>
